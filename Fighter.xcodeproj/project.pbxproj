@@ -28,6 +28,7 @@
 		0E78DE9C1E65FBC60025EBC0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		0E78DE9F1E65FBC60025EBC0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		0E78DEA11E65FBC70025EBC0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		0E78DEA71E65FD790025EBC0 /* Grade_11_Computer_Science_ISP_Proposal.docx */ = {isa = PBXFileReference; lastKnownFileType = file; path = Grade_11_Computer_Science_ISP_Proposal.docx; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,6 +61,7 @@
 		0E78DE8E1E65FBC60025EBC0 /* Fighter */ = {
 			isa = PBXGroup;
 			children = (
+				0E78DEA71E65FD790025EBC0 /* Grade_11_Computer_Science_ISP_Proposal.docx */,
 				0E78DE8F1E65FBC60025EBC0 /* AppDelegate.swift */,
 				0E78DE911E65FBC60025EBC0 /* GameScene.sks */,
 				0E78DE931E65FBC60025EBC0 /* Actions.sks */,

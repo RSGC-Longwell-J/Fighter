@@ -12,15 +12,20 @@ import SpriteKit
 class GameScene: SKScene {
     
     // MARK: Properties
-    var stickMan = SKSpriteNode()
     
-    // MARK: Initializer
+    
+    let stickMan = SKSpriteNode(imageNamed: "Stick_Figure")
+    
+    let scoreLabel = SKLabelNode(fontNamed: "Helvetica")
+    
+    var lives = 3
+    
     override func didMove(to view: SKView) {
         
         backgroundColor = SKColor.white
         //adding a sprite
     
-        stickMan = SKSpriteNode(imageNamed: "Stick_Figure")
+
         stickMan.setScale(1.5)
         stickMan.position = CGPoint(x: 250, y: 500)
         addChild(stickMan)
@@ -35,6 +40,20 @@ class GameScene: SKScene {
         
         run(actionZombieRepeat)
         
+        scoreLabel.text = String(lives)
+        scoreLabel.fontColor = SKColor.black
+        scoreLabel.fontSize = 96
+        scoreLabel.zPosition = 150
+        scoreLabel.position = CGPoint(x: size.width - size.width / 8, y: size.height - size.height / 4)
+        
+        addChild(scoreLabel)
+        
+        
+    }
+    
+    override func update(_ currentTime: TimeInterval) {
+        
+        checkCollisions()
     }
     
     
@@ -70,6 +89,7 @@ class GameScene: SKScene {
         
         stickMan.run(actionMove)
 
+        
     }
     func spawnZombie() {
         let zombie = SKSpriteNode(imageNamed: "zombie")
@@ -86,6 +106,8 @@ class GameScene: SKScene {
         
         addChild(zombie)
         
+        zombie.name = "zombie"
+        
         let endingPosition = CGPoint(x: 0 - zombie.size.width, y: verticalPosition)
         let actionMove = SKAction.move(to: endingPosition, duration: 7)
         
@@ -94,5 +116,42 @@ class GameScene: SKScene {
         let actionSequence = SKAction.sequence([actionMove, actionRemove])
         zombie.run(actionSequence)
     }
+    
+    
+    func checkCollisions() {
+        
+        var hitZombie : [SKSpriteNode] = []
+        
+        enumerateChildNodes(withName: "zombie", using: {
+            node, _ in
+        
+        
+        let zombie = node as! SKSpriteNode
+        
+//            if zombie.frame.insetBy(dx: 40 dy: 10).intersects(self.stickMan.frame)
+            
+        if zombie.frame.intersects(self.stickMan.frame) {
+            
+            hitZombie.append(zombie)
+        }
+        
+    })
+        
+        for zombie in hitZombie{
+            
+            stickManHit(by: zombie)
+        }
+    }
+    
+    func stickManHit(by zombie: SKSpriteNode){
+        
+        lives -= -1
+        
+        scoreLabel.text = String(lives)
+        
+        zombie.removeFromParent()
+    }
+    
+
     
 }

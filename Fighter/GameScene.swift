@@ -7,6 +7,7 @@
 //
 
 import SpriteKit
+import Darwin
 
 
 class GameScene: SKScene {
@@ -19,6 +20,13 @@ class GameScene: SKScene {
     let scoreLabel = SKLabelNode(fontNamed: "Helvetica")
     
     var lives = 3
+    
+    while (lives = 0)  {
+        
+        pauseForAMoment()
+    }
+    
+    
     
     override func didMove(to view: SKView) {
         
@@ -152,6 +160,11 @@ class GameScene: SKScene {
         zombie.removeFromParent()
     }
     
+    func pauseForAMoment() {
+        
+        sleep(1)
+        
+    }
 
     
 }

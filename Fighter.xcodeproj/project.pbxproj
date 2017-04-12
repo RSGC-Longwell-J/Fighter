@@ -27,6 +27,7 @@
 		0E78DE9F1E65FBC60025EBC0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		0E78DEA11E65FBC70025EBC0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0E78DEA71E65FD790025EBC0 /* Grade_11_Computer_Science_ISP_Proposal.docx */ = {isa = PBXFileReference; lastKnownFileType = file; path = Grade_11_Computer_Science_ISP_Proposal.docx; sourceTree = SOURCE_ROOT; };
+		0E7F80411E9EA8DE005CCF17 /* Independent_Study_Project_-_Checkpoint_1.docx */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Independent_Study_Project_-_Checkpoint_1.docx"; path = "../../../Downloads/Independent_Study_Project_-_Checkpoint_1.docx"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,6 +61,7 @@
 			isa = PBXGroup;
 			children = (
 				0E78DEA71E65FD790025EBC0 /* Grade_11_Computer_Science_ISP_Proposal.docx */,
+				0E7F80411E9EA8DE005CCF17 /* Independent_Study_Project_-_Checkpoint_1.docx */,
 				0E78DE8F1E65FBC60025EBC0 /* AppDelegate.swift */,
 				0E78DE951E65FBC60025EBC0 /* GameScene.swift */,
 				0E78DE971E65FBC60025EBC0 /* GameViewController.swift */,

@@ -19,16 +19,15 @@ class GameScene: SKScene {
     
     let scoreLabel = SKLabelNode(fontNamed: "Helvetica")
     
+    
+    
     var lives = 3
     
-    while (lives = 0)  {
-        
-        pauseForAMoment()
-    }
+    
+    if lives ==
     
     
-    
-    override func didMove(to view: SKView) {
+    override func didMove(to view:  SKView) {
         
         backgroundColor = SKColor.white
         //adding a sprite

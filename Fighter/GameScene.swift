@@ -14,39 +14,55 @@ class GameScene: SKScene {
     
     // MARK: Properties
     
-    
+    //setting stickman to be the picture of him
     let stickMan = SKSpriteNode(imageNamed: "Stick_Figure")
     
+    
+    //setting the score to be helvetica font
     let scoreLabel = SKLabelNode(fontNamed: "Helvetica")
     
     
+    //creating a variable
+    var lives = 5
     
-    var lives = 3
-    
-    
-    if lives ==
     
     
     override func didMove(to view:  SKView) {
         
+        
+        //setting the background color to be black
         backgroundColor = SKColor.white
-        //adding a sprite
-    
+       
 
+        //Creating StickMan
         stickMan.setScale(1.5)
         stickMan.position = CGPoint(x: 250, y: 500)
         addChild(stickMan)
         
-        let actionWait = SKAction.wait(forDuration: 5)
-        let actionSpawn = SKAction.run() { [weak self] in self?.spawnZombie() }
+        //Spawning the Zombie
+        let actionWaitZombie = SKAction.wait(forDuration: 5)
+        let actionSpawnZombie = SKAction.run() { [weak self] in self?.spawnZombie() }
         
         
-        let actionSequence = SKAction.sequence([actionWait, actionSpawn])
-        let actionZombieRepeat = SKAction.repeatForever(actionSequence)
+        let actionSequenceZombie = SKAction.sequence([actionWaitZombie, actionSpawnZombie])
+        let actionZombieRepeat = SKAction.repeatForever(actionSequenceZombie)
         
         
         run(actionZombieRepeat)
         
+        //spawning the powerup
+        
+        let actionWaitPower = SKAction.wait(forDuration:10)
+        let actionSpawnPower = SKAction.run() { [weak self] in self?.spawnPower() }
+        
+        let actionSequencePower = SKAction.sequence([actionWaitPower, actionSpawnPower])
+        let actionPowerRepeat = SKAction.repeatForever(actionSequencePower)
+        
+        run(actionPowerRepeat)
+        
+        
+        
+        //Making the Score Appear
         scoreLabel.text = String(lives)
         scoreLabel.fontColor = SKColor.black
         scoreLabel.fontSize = 96
@@ -55,13 +71,25 @@ class GameScene: SKScene {
         
         addChild(scoreLabel)
         
+        if lives < 0{
+            
+            let gameOverScene = GameOverScreen(size: size)
+            
+            let reveal = SKTransition.reveal(with: .down, duration: 0.5)
+            
+            view.presentScene(gameOverScene,transistion: reveal)
+            
+            
+        }
         
     }
     
     override func update(_ currentTime: TimeInterval) {
         
-        checkCollisions()
+        checkCollisionZombie()
+        checkCollisionPowerup()
     }
+    
     
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -72,7 +100,7 @@ class GameScene: SKScene {
         }
         let touchLocation = touch.location(in: self)
         
-        moveStickMan(touchLocation: touchLocation)
+        moveStickManHorizontaly(touchLocation: touchLocation)
         
             }
     
@@ -84,11 +112,13 @@ class GameScene: SKScene {
         }
         let touchLocation = touch.location(in: self)
         
-        moveStickMan(touchLocation: touchLocation)
+        moveStickManHorizontaly(touchLocation: touchLocation)
         
     }
     
-    func moveStickMan(touchLocation: CGPoint)  {
+    
+    //Moving stickMan to a location
+    func moveStickManHorizontaly(touchLocation: CGPoint)  {
         
         let destination = CGPoint(x: stickMan.position.x, y: touchLocation.y)
         
@@ -98,6 +128,12 @@ class GameScene: SKScene {
 
         
     }
+    
+    //making the projectile attack appear
+    
+    
+    
+    //Spawning the Zombies
     func spawnZombie() {
         let zombie = SKSpriteNode(imageNamed: "zombie")
         
@@ -124,8 +160,40 @@ class GameScene: SKScene {
         zombie.run(actionSequence)
     }
     
+    //Spawning the PowerUp
     
-    func checkCollisions() {
+    func spawnPower() {
+        
+        let Power1 = SKSpriteNode(imageNamed: "Power1")
+        
+        let verticalPosition = CGFloat(arc4random_uniform(UInt32(size.height - Power1.size.width)))
+        let horizontalPosition = size.width + Power1.size.width
+        
+        let startingPosition = CGPoint(x: horizontalPosition, y: verticalPosition)
+        
+        Power1.position = startingPosition
+        
+        Power1.setScale(1.0)
+
+        addChild(Power1)
+        
+        Power1.name = "Power1"
+        
+        let endingPosition = CGPoint(x: 0 - Power1.size.width, y: verticalPosition)
+        let actionMove = SKAction.move(to: endingPosition, duration: 7)
+        
+        let actionRemove = SKAction.removeFromParent()
+        
+        let actionSequence = SKAction.sequence([actionMove, actionRemove])
+        
+        Power1.run(actionSequence)
+        
+        
+    }
+    
+    
+    //checking if stickman is hit by a zombie
+    func checkCollisionZombie() {
         
         var hitZombie : [SKSpriteNode] = []
         
@@ -135,7 +203,6 @@ class GameScene: SKScene {
         
         let zombie = node as! SKSpriteNode
         
-//            if zombie.frame.insetBy(dx: 40 dy: 10).intersects(self.stickMan.frame)
             
         if zombie.frame.intersects(self.stickMan.frame) {
             
@@ -146,24 +213,63 @@ class GameScene: SKScene {
         
         for zombie in hitZombie{
             
-            stickManHit(by: zombie)
+            stickManHitByZombie(by: zombie)
         }
     }
     
-    func stickManHit(by zombie: SKSpriteNode){
+    
+    //What happens when the zombie hits stickMan
+    func stickManHitByZombie(by zombie: SKSpriteNode){
         
-        lives -= -1
+        lives = lives - 1
         
         scoreLabel.text = String(lives)
         
         zombie.removeFromParent()
     }
     
+    
+    //checking if stickman is hit by power up
+    func checkCollisionPowerup() {
+        
+        var hitPower : [SKSpriteNode] = []
+        
+        enumerateChildNodes(withName: " Power1", using: {
+            node, _ in
+            
+            let Power1 = node as! SKSpriteNode
+            
+            if Power1.frame.intersects(self.stickMan.frame){
+                
+                hitPower.append(Power1)
+            }
+        })
+        for Power1 in hitPower{
+            stickManHitByPower(by: Power1)
+        }
+        
+    }
+    
+    //what heppens when the powerup hits stickman
+    func stickManHitByPower(by Power1: SKSpriteNode){
+        
+        lives = lives + 1
+        
+        scoreLabel.text = String(lives)
+        
+        Power1.removeFromParent()
+        
+        
+    }
+    
+    //function to pause the game for a sec
     func pauseForAMoment() {
         
         sleep(1)
         
     }
+    
+    
 
     
 }

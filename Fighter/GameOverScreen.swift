@@ -12,16 +12,21 @@ import SpriteKit
 class GameOverScreen : SKScene {
     
     override func didMove(to view: SKView) {
-        backgroundColor = SKColor.black
         
-        let gameOverScreen = SKLabelNode(fontNamed: "Helvetica")
-        gameOverScreen.text = "GameOver"
-        gameOverScreen.fontColor = SKColor.white
-        gameOverScreen.fontSize = 288
-        gameOverScreen.zPosition = 150
+        let gameOverScreen = SKSpriteNode(imageNamed: "Blood")
+        gameOverScreen.setScale(9)
+        gameOverScreen.zPosition = 100
         gameOverScreen.position = CGPoint(x: size.width/2, y: size.height/2)
         
+        let gameOverScreenText = SKLabelNode(fontNamed: "Helvetica")
+        gameOverScreenText.text = "GameOver"
+        gameOverScreenText.fontColor = SKColor.white
+        gameOverScreenText.fontSize = 288
+        gameOverScreenText.zPosition = 150
+        gameOverScreenText.position = CGPoint(x: size.width/2, y: size.height/2)
+        
         addChild(gameOverScreen)
+        addChild(gameOverScreenText)
     }
 }
 

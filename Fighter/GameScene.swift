@@ -41,12 +41,14 @@ class GameScene: SKScene {
         //Creating StickMan
         stickMan.setScale(1.5)
         stickMan.position = CGPoint(x: 250, y: 500)
+        stickMan.zPosition = 50
         addChild(stickMan)
         
         //Creating the background
         
-        background.setScale(1.25)
+        background.setScale(2.2)
         background.zPosition = 0
+        background.position = CGPoint(x: size.width/2, y:size.height/2)
         addChild(background)
         
         //Spawning the Zombie
@@ -151,7 +153,7 @@ class GameScene: SKScene {
         let startingPosition = CGPoint(x: horizontalPosition, y: verticalPosition)
         
         zombie.position = startingPosition
-        
+        zombie.zPosition = 50
         zombie.setScale(0.9)
         
         addChild(zombie)

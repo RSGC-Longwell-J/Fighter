@@ -17,9 +17,13 @@ class GameScene: SKScene {
     //setting stickman to be the picture of him
     let stickMan = SKSpriteNode(imageNamed: "Stick_Figure")
     
+    //Background
+    let background = SKSpriteNode(imageNamed: "Grass")
+    
     
     //setting the score to be helvetica font
     let scoreLabel = SKLabelNode(fontNamed: "Helvetica")
+    let livesOnScreen = SKLabelNode(fontNamed: "Helvetica")
     
     
     //creating a variable
@@ -32,12 +36,18 @@ class GameScene: SKScene {
         
         //setting the background color to be black
         backgroundColor = SKColor.white
-       
-
+        
+        
         //Creating StickMan
         stickMan.setScale(1.5)
         stickMan.position = CGPoint(x: 250, y: 500)
         addChild(stickMan)
+        
+        //Creating the background
+        
+        background.setScale(1.25)
+        background.zPosition = 0
+        addChild(background)
         
         //Spawning the Zombie
         let actionWaitZombie = SKAction.wait(forDuration: 5)
@@ -63,7 +73,7 @@ class GameScene: SKScene {
         
         
         //Making the Score Appear
-        scoreLabel.text = String(lives)
+        scoreLabel.text = String("Lives \(lives)")
         scoreLabel.fontColor = SKColor.black
         scoreLabel.fontSize = 96
         scoreLabel.zPosition = 150
@@ -71,16 +81,6 @@ class GameScene: SKScene {
         
         addChild(scoreLabel)
         
-        if lives < 0{
-            
-            let gameOverScene = GameOverScreen(size: size)
-            
-            let reveal = SKTransition.reveal(with: .down, duration: 0.5)
-            
-            view.presentScene(gameOverScene,transistion: reveal)
-            
-            
-        }
         
     }
     
@@ -92,6 +92,7 @@ class GameScene: SKScene {
     
     
     
+    
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         
         // get the first touch location
@@ -100,9 +101,15 @@ class GameScene: SKScene {
         }
         let touchLocation = touch.location(in: self)
         
+        if touchLocation.x > self.size.width / 2 {
+            print("right")
+        } else {
+            print("left")
+        }
+        
         moveStickManHorizontaly(touchLocation: touchLocation)
         
-            }
+    }
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         
@@ -125,7 +132,7 @@ class GameScene: SKScene {
         let actionMove = SKAction.move(to:destination, duration: 0.5)
         
         stickMan.run(actionMove)
-
+        
         
     }
     
@@ -174,7 +181,7 @@ class GameScene: SKScene {
         Power1.position = startingPosition
         
         Power1.setScale(1.0)
-
+        
         addChild(Power1)
         
         Power1.name = "Power1"
@@ -199,17 +206,17 @@ class GameScene: SKScene {
         
         enumerateChildNodes(withName: "zombie", using: {
             node, _ in
-        
-        
-        let zombie = node as! SKSpriteNode
-        
             
-        if zombie.frame.intersects(self.stickMan.frame) {
             
-            hitZombie.append(zombie)
-        }
-        
-    })
+            let zombie = node as! SKSpriteNode
+            
+            
+            if zombie.frame.intersects(self.stickMan.frame) {
+                
+                hitZombie.append(zombie)
+            }
+            
+        })
         
         for zombie in hitZombie{
             
@@ -222,6 +229,18 @@ class GameScene: SKScene {
     func stickManHitByZombie(by zombie: SKSpriteNode){
         
         lives = lives - 1
+        
+        if lives < 0{
+            
+            let gameOverScene = GameOverScreen(size: size)
+            
+            let reveal = SKTransition.reveal(with: .down, duration: 0.5)
+            
+            view?.presentScene(gameOverScene,transition: reveal)
+            
+            
+        }
+        
         
         scoreLabel.text = String(lives)
         
@@ -270,6 +289,6 @@ class GameScene: SKScene {
     }
     
     
-
+    
     
 }

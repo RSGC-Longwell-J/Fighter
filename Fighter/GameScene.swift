@@ -146,7 +146,7 @@ class GameScene: SKScene {
     func spawnZombie() {
         let zombie = SKSpriteNode(imageNamed: "zombie")
         
-        let verticalPosition = CGFloat(arc4random_uniform(UInt32(size.height - zombie.size.width)))
+        let verticalPosition = CGFloat(arc4random_uniform(0) + 1500)
         let horizontalPosition = size.width + zombie.size.width
         
         
@@ -175,13 +175,13 @@ class GameScene: SKScene {
         
         let Power1 = SKSpriteNode(imageNamed: "Power1")
         
-        let verticalPosition = CGFloat(arc4random_uniform(UInt32(size.height - Power1.size.width)))
+        let verticalPosition = CGFloat(arc4random_uniform(400) + 1200)
         let horizontalPosition = size.width + Power1.size.width
         
         let startingPosition = CGPoint(x: horizontalPosition, y: verticalPosition)
         
         Power1.position = startingPosition
-        
+        Power1.zPosition = 50
         Power1.setScale(1.0)
         
         addChild(Power1)
@@ -244,7 +244,7 @@ class GameScene: SKScene {
         }
         
         
-        scoreLabel.text = String(lives)
+        scoreLabel.text = String("Lives \(lives)")
         
         zombie.removeFromParent()
     }
@@ -255,28 +255,33 @@ class GameScene: SKScene {
         
         var hitPower : [SKSpriteNode] = []
         
-        enumerateChildNodes(withName: " Power1", using: {
+        enumerateChildNodes(withName: "Power1", using: {
             node, _ in
+            
             
             let Power1 = node as! SKSpriteNode
             
-            if Power1.frame.intersects(self.stickMan.frame){
+            
+            if Power1.frame.intersects(self.stickMan.frame) {
                 
                 hitPower.append(Power1)
             }
+            
         })
+        
         for Power1 in hitPower{
+            
             stickManHitByPower(by: Power1)
         }
-        
     }
+    
     
     //what heppens when the powerup hits stickman
     func stickManHitByPower(by Power1: SKSpriteNode){
         
         lives = lives + 1
         
-        scoreLabel.text = String(lives)
+        scoreLabel.text = String("Lives \(lives)")
         
         Power1.removeFromParent()
         

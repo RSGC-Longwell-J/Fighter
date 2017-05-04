@@ -49,7 +49,7 @@ class GameScene: SKScene {
         
         //Creating the background
         
-        background.setScale(2.2)
+        background.setScale(2.4)
         background.zPosition = 0
         background.position = CGPoint(x: size.width/2, y:size.height/2)
         addChild(background)
@@ -82,7 +82,7 @@ class GameScene: SKScene {
         scoreLabel.fontColor = SKColor.black
         scoreLabel.fontSize = 96
         scoreLabel.zPosition = 150
-        scoreLabel.position = CGPoint(x: 300, y: 1600)
+        scoreLabel.position = CGPoint(x: 300, y: 1300)
         
         addChild(scoreLabel)
         
@@ -107,7 +107,7 @@ class GameScene: SKScene {
         }
         let touchLocation = touch.location(in: self)
         
-        if touchLocation.x > self.size.width / 2 {
+        if touchLocation.x > self.size.width / 3 {
             
         //making the projectile attack appear
             
@@ -178,7 +178,7 @@ class GameScene: SKScene {
     func spawnZombie() {
         let zombie = SKSpriteNode(imageNamed: "zombie")
         
-        let verticalPosition = zombie.size.height + CGFloat(arc4random_uniform(UInt32(1500)))
+        let verticalPosition = zombie.size.height + CGFloat(arc4random_uniform(UInt32(1100)))
         let horizontalPosition = size.width + zombie.size.width
         
         
@@ -192,13 +192,30 @@ class GameScene: SKScene {
         
         zombie.name = "zombie"
         
+        
         let endingPosition = CGPoint(x: 0 - zombie.size.width, y: verticalPosition)
-        let actionMove = SKAction.move(to: endingPosition, duration: 7)
+        let actionMove = SKAction.move(to: endingPosition, duration: TimeInterval(CGFloat(arc4random_uniform(UInt32(4)+5))))
         
         let actionRemove = SKAction.removeFromParent()
         
         let actionSequence = SKAction.sequence([actionMove, actionRemove])
         zombie.run(actionSequence)
+        
+        if zombie.position == endingPosition{
+            
+            lives = lives - 1
+            scoreLabel.text = String("Lives : \(lives)")
+        }
+        
+        if lives < 0 {
+            
+            let gameOverScene = GameOverScreen(size: size)
+            
+            let reveal = SKTransition.reveal(with: .down, duration: 0.5)
+            
+            view?.presentScene(gameOverScene,transition: reveal)
+
+        }
     }
     
     //Spawning the PowerUp
@@ -207,7 +224,7 @@ class GameScene: SKScene {
         
         let Power1 = SKSpriteNode(imageNamed: "Power1")
         
-        let verticalPosition = Power1.size.height + CGFloat(arc4random_uniform(UInt32(1600)))
+        let verticalPosition = Power1.size.height + CGFloat(arc4random_uniform(UInt32(1200)))
         let horizontalPosition = size.width + Power1.size.width
         
         let startingPosition = CGPoint(x: horizontalPosition, y: verticalPosition)
@@ -263,7 +280,6 @@ class GameScene: SKScene {
     func stickManHitByZombie(by zombie: SKSpriteNode){
         
         lives = lives - 1
-        
         
         
         if lives < 0{

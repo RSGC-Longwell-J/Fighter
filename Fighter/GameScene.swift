@@ -16,6 +16,9 @@ class GameScene: SKScene {
     
     //setting stickman to be the picture of him
     let stickMan = SKSpriteNode(imageNamed: "Stick_Figure")
+
+    //Projectile
+    let projectile = SKSpriteNode(imageNamed: "fire")
     
     //Background
     let background = SKSpriteNode(imageNamed: "Grass")
@@ -64,7 +67,7 @@ class GameScene: SKScene {
         
         //spawning the powerup
         
-        let actionWaitPower = SKAction.wait(forDuration:10)
+        let actionWaitPower = SKAction.wait(forDuration: 20)
         let actionSpawnPower = SKAction.run() { [weak self] in self?.spawnPower() }
         
         let actionSequencePower = SKAction.sequence([actionWaitPower, actionSpawnPower])
@@ -75,11 +78,11 @@ class GameScene: SKScene {
         
         
         //Making the Score Appear
-        scoreLabel.text = String("Lives \(lives)")
+        scoreLabel.text = String("Lives : \(lives)")
         scoreLabel.fontColor = SKColor.black
         scoreLabel.fontSize = 96
         scoreLabel.zPosition = 150
-        scoreLabel.position = CGPoint(x: size.width - size.width / 8, y: size.height - size.height / 4)
+        scoreLabel.position = CGPoint(x: 300, y: 1200)
         
         addChild(scoreLabel)
         
@@ -90,6 +93,7 @@ class GameScene: SKScene {
         
         checkCollisionZombie()
         checkCollisionPowerup()
+        checkCollisionProjectile()
     }
     
     
@@ -104,26 +108,31 @@ class GameScene: SKScene {
         let touchLocation = touch.location(in: self)
         
         if touchLocation.x > self.size.width / 2 {
-            print("right")
+            
+        //making the projectile attack appear
+            
+            spawnProjectile()
+            
+            
         } else {
-            print("left")
+            
+            func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+                
+                // get the first touch location
+                guard let touch = touches.first else {
+                    return
+                }
+                let touchLocation = touch.location(in: self)
+                
+                moveStickManHorizontaly(touchLocation: touchLocation)
+                
+            }
         }
         
         moveStickManHorizontaly(touchLocation: touchLocation)
         
     }
     
-    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-        
-        // get the first touch location
-        guard let touch = touches.first else {
-            return
-        }
-        let touchLocation = touch.location(in: self)
-        
-        moveStickManHorizontaly(touchLocation: touchLocation)
-        
-    }
     
     
     //Moving stickMan to a location
@@ -135,18 +144,40 @@ class GameScene: SKScene {
         
         stickMan.run(actionMove)
         
-        
     }
     
-    //making the projectile attack appear
-    
+
+    //spawning the projectile
+    func spawnProjectile() {
+        
+        let projectile = SKSpriteNode(imageNamed: "fire")
+        
+        let verticalPosition = stickMan.position.y
+        let horizontalPosition = stickMan.position.x + 20
+        
+        let startingPosition = CGPoint(x: horizontalPosition, y: verticalPosition)
+        
+        projectile.position = startingPosition
+        projectile.zPosition = 50
+        projectile.setScale(0.5)
+        
+        addChild(projectile)
+        
+        let endingPosition = CGPoint(x: 2048 + projectile.size.width, y: verticalPosition)
+        let actionMove = SKAction.move(to: endingPosition, duration: 2)
+        
+        let actionRemove = SKAction.removeFromParent()
+        
+        let actionSequence = SKAction.sequence([actionMove, actionRemove])
+        projectile.run(actionSequence)
+    }
     
     
     //Spawning the Zombies
     func spawnZombie() {
         let zombie = SKSpriteNode(imageNamed: "zombie")
         
-        let verticalPosition = CGFloat(arc4random_uniform(0) + 1500)
+        let verticalPosition = zombie.size.height + CGFloat(arc4random_uniform(UInt32(1100)))
         let horizontalPosition = size.width + zombie.size.width
         
         
@@ -175,7 +206,7 @@ class GameScene: SKScene {
         
         let Power1 = SKSpriteNode(imageNamed: "Power1")
         
-        let verticalPosition = CGFloat(arc4random_uniform(400) + 1200)
+        let verticalPosition = Power1.size.height + CGFloat(arc4random_uniform(UInt32(1100)))
         let horizontalPosition = size.width + Power1.size.width
         
         let startingPosition = CGPoint(x: horizontalPosition, y: verticalPosition)
@@ -232,6 +263,8 @@ class GameScene: SKScene {
         
         lives = lives - 1
         
+        
+        
         if lives < 0{
             
             let gameOverScene = GameOverScreen(size: size)
@@ -244,10 +277,45 @@ class GameScene: SKScene {
         }
         
         
-        scoreLabel.text = String("Lives \(lives)")
+        scoreLabel.text = String("Lives : \(lives)")
         
         zombie.removeFromParent()
     }
+    
+    //checking if zombie is hit by  projectile
+    func checkCollisionProjectile() {
+        
+        var hitZombie : [SKSpriteNode] = []
+        
+        enumerateChildNodes(withName: "zombie", using: {
+            node, _ in
+            
+            
+            let zombie = node as! SKSpriteNode
+            
+            
+            if zombie.frame.intersects(self.projectile.frame) {
+                
+                hitZombie.append(zombie)
+               
+            }
+            
+        })
+        
+        for zombie in hitZombie{
+            
+            projectileHitByZombie(by: zombie)
+        }
+    }
+
+    //what happens when projectile and zombie hit
+    func projectileHitByZombie(by zombie: SKSpriteNode){
+
+print("HIT")
+//        zombie.removeFromParent()
+//        projectile.removeFromParent()
+    }
+    
     
     
     //checking if stickman is hit by power up
@@ -281,7 +349,7 @@ class GameScene: SKScene {
         
         lives = lives + 1
         
-        scoreLabel.text = String("Lives \(lives)")
+        scoreLabel.text = String("Lives : \(lives)")
         
         Power1.removeFromParent()
         

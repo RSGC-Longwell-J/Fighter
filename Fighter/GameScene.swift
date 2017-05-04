@@ -82,7 +82,7 @@ class GameScene: SKScene {
         scoreLabel.fontColor = SKColor.black
         scoreLabel.fontSize = 96
         scoreLabel.zPosition = 150
-        scoreLabel.position = CGPoint(x: 300, y: 1200)
+        scoreLabel.position = CGPoint(x: 300, y: 1600)
         
         addChild(scoreLabel)
         
@@ -127,9 +127,10 @@ class GameScene: SKScene {
                 moveStickManHorizontaly(touchLocation: touchLocation)
                 
             }
+            moveStickManHorizontaly(touchLocation: touchLocation)
+
         }
         
-        moveStickManHorizontaly(touchLocation: touchLocation)
         
     }
     
@@ -177,7 +178,7 @@ class GameScene: SKScene {
     func spawnZombie() {
         let zombie = SKSpriteNode(imageNamed: "zombie")
         
-        let verticalPosition = zombie.size.height + CGFloat(arc4random_uniform(UInt32(1100)))
+        let verticalPosition = zombie.size.height + CGFloat(arc4random_uniform(UInt32(1500)))
         let horizontalPosition = size.width + zombie.size.width
         
         
@@ -206,7 +207,7 @@ class GameScene: SKScene {
         
         let Power1 = SKSpriteNode(imageNamed: "Power1")
         
-        let verticalPosition = Power1.size.height + CGFloat(arc4random_uniform(UInt32(1100)))
+        let verticalPosition = Power1.size.height + CGFloat(arc4random_uniform(UInt32(1600)))
         let horizontalPosition = size.width + Power1.size.width
         
         let startingPosition = CGPoint(x: horizontalPosition, y: verticalPosition)
@@ -287,7 +288,7 @@ class GameScene: SKScene {
         
         var hitZombie : [SKSpriteNode] = []
         
-        enumerateChildNodes(withName: "zombie", using: {
+        enumerateChildNodes(withName: "fire", using: {
             node, _ in
             
             
@@ -297,7 +298,6 @@ class GameScene: SKScene {
             if zombie.frame.intersects(self.projectile.frame) {
                 
                 hitZombie.append(zombie)
-               
             }
             
         })
@@ -307,11 +307,10 @@ class GameScene: SKScene {
             projectileHitByZombie(by: zombie)
         }
     }
-
     //what happens when projectile and zombie hit
     func projectileHitByZombie(by zombie: SKSpriteNode){
 
-print("HIT")
+        print("HIT")
 //        zombie.removeFromParent()
 //        projectile.removeFromParent()
     }

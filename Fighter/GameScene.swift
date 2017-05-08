@@ -18,7 +18,10 @@ class GameScene: SKScene {
     let stickMan = SKSpriteNode(imageNamed: "Stick_Figure")
 
     //Projectile
-    let projectile = SKSpriteNode(imageNamed: "fire")
+    let projectile = SKSpriteNode(imageNamed: "projectile")
+    
+    //Zombie
+    let zombie = SKSpriteNode(imageNamed: "zombie")
     
     //Background
     let background = SKSpriteNode(imageNamed: "Grass")
@@ -47,6 +50,8 @@ class GameScene: SKScene {
         stickMan.zPosition = 50
         addChild(stickMan)
         
+        
+        
         //Creating the background
         
         background.setScale(2.4)
@@ -62,8 +67,8 @@ class GameScene: SKScene {
         let actionSequenceZombie = SKAction.sequence([actionWaitZombie, actionSpawnZombie])
         let actionZombieRepeat = SKAction.repeatForever(actionSequenceZombie)
         
-        
         run(actionZombieRepeat)
+
         
         //spawning the powerup
         
@@ -82,7 +87,7 @@ class GameScene: SKScene {
         scoreLabel.fontColor = SKColor.black
         scoreLabel.fontSize = 96
         scoreLabel.zPosition = 150
-        scoreLabel.position = CGPoint(x: 300, y: 1300)
+        scoreLabel.position = CGPoint(x: 300, y: 1400)
         
         addChild(scoreLabel)
         
@@ -94,6 +99,34 @@ class GameScene: SKScene {
         checkCollisionZombie()
         checkCollisionPowerup()
         checkCollisionProjectile()
+        
+        for node in self.children {
+            if let nodeName = node.name {
+                if nodeName == "zombie" {
+                    if node.position.x < -140 {
+                        
+                        lives = lives - 1
+                        
+                        scoreLabel.text = String("Lives : \(lives)")
+                    }
+                }
+
+            }
+        }
+        
+        
+    
+        
+        
+        if lives < 0 {
+            let gameOverScene = GameOverScreen(size: size)
+            
+            let reveal = SKTransition.reveal(with: .down, duration: 0.5)
+            
+            view?.presentScene(gameOverScene,transition: reveal)
+            
+        }
+
     }
     
     
@@ -151,16 +184,17 @@ class GameScene: SKScene {
     //spawning the projectile
     func spawnProjectile() {
         
-        let projectile = SKSpriteNode(imageNamed: "fire")
+        let projectile = SKSpriteNode(imageNamed: "projectile")
         
         let verticalPosition = stickMan.position.y
-        let horizontalPosition = stickMan.position.x + 20
+        let horizontalPosition = stickMan.position.x - 50
         
         let startingPosition = CGPoint(x: horizontalPosition, y: verticalPosition)
         
         projectile.position = startingPosition
         projectile.zPosition = 50
         projectile.setScale(0.5)
+        projectile.name = "projectile"
         
         addChild(projectile)
         
@@ -173,12 +207,12 @@ class GameScene: SKScene {
         projectile.run(actionSequence)
     }
     
-    
     //Spawning the Zombies
     func spawnZombie() {
+        
         let zombie = SKSpriteNode(imageNamed: "zombie")
         
-        let verticalPosition = zombie.size.height + CGFloat(arc4random_uniform(UInt32(1100)))
+        let verticalPosition = zombie.size.height + CGFloat(arc4random_uniform(UInt32(1050)))
         let horizontalPosition = size.width + zombie.size.width
         
         
@@ -187,36 +221,21 @@ class GameScene: SKScene {
         zombie.position = startingPosition
         zombie.zPosition = 50
         zombie.setScale(0.9)
+        zombie.name = "zombie"
         
         addChild(zombie)
         
-        zombie.name = "zombie"
         
         
         let endingPosition = CGPoint(x: 0 - zombie.size.width, y: verticalPosition)
-        let actionMove = SKAction.move(to: endingPosition, duration: TimeInterval(CGFloat(arc4random_uniform(UInt32(4)+5))))
+        let actionMove = SKAction.move(to: endingPosition, duration: TimeInterval(CGFloat(arc4random_uniform(4)+4)))
         
         let actionRemove = SKAction.removeFromParent()
         
         let actionSequence = SKAction.sequence([actionMove, actionRemove])
         zombie.run(actionSequence)
         
-        if zombie.position == endingPosition{
-            
-            lives = lives - 1
-            scoreLabel.text = String("Lives : \(lives)")
-        }
-        
-        if lives < 0 {
-            
-            let gameOverScene = GameOverScreen(size: size)
-            
-            let reveal = SKTransition.reveal(with: .down, duration: 0.5)
-            
-            view?.presentScene(gameOverScene,transition: reveal)
-
-        }
-    }
+           }
     
     //Spawning the PowerUp
     
@@ -299,37 +318,6 @@ class GameScene: SKScene {
         zombie.removeFromParent()
     }
     
-    //checking if zombie is hit by  projectile
-    func checkCollisionProjectile() {
-        
-        var hitZombie : [SKSpriteNode] = []
-        
-        enumerateChildNodes(withName: "fire", using: {
-            node, _ in
-            
-            
-            let zombie = node as! SKSpriteNode
-            
-            
-            if zombie.frame.intersects(self.projectile.frame) {
-                
-                hitZombie.append(zombie)
-            }
-            
-        })
-        
-        for zombie in hitZombie{
-            
-            projectileHitByZombie(by: zombie)
-        }
-    }
-    //what happens when projectile and zombie hit
-    func projectileHitByZombie(by zombie: SKSpriteNode){
-
-        print("HIT")
-//        zombie.removeFromParent()
-//        projectile.removeFromParent()
-    }
     
     
     
@@ -368,6 +356,36 @@ class GameScene: SKScene {
         
         Power1.removeFromParent()
         
+        
+    }
+    
+    //what happends when the projectile hit the zombie
+    
+    func checkCollisionProjectile() {
+        
+        var hitProjectile : [SKSpriteNode] = []
+        
+        enumerateChildNodes(withName: "projectile", using: {
+            node, _ in
+        
+        let projectile = node as! SKSpriteNode
+        
+            if projectile.frame.intersects(self.zombie.frame) {
+                
+                hitProjectile.append(projectile)
+                
+            }
+    })
+        
+        for projectile in hitProjectile{
+            
+            projectileHitByZombie(by: projectile)
+        }
+    }
+    
+    func projectileHitByZombie(by zombie: SKSpriteNode){
+        
+        projectile.removeFromParent()
         
     }
     

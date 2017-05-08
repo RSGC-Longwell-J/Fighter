@@ -27,6 +27,28 @@ class GameOverScreen : SKScene {
         
         addChild(gameOverScreen)
         addChild(gameOverScreenText)
+        
+        
+    }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        
+        // get the first touch location
+        guard let touch = touches.first else {
+            return
+        }
+        let touchLocation = touch.location(in: self)
+        
+        if touchLocation.x > self.size.width - self.size.width {
+            
+            let startScreen = StartScreen(size: size)
+            
+            let reveal = SKTransition.reveal(with: .down, duration: 0.5)
+            
+            view?.presentScene(startScreen,transition: reveal)
+            
+            
+        }
     }
 }
 
